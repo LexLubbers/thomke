@@ -358,7 +358,7 @@ export default function ModulaireKunstStudio() {
       </aside>
 
       <main className="flex-1 flex flex-col">
-        <div className="h-14 border-b bg-white flex items-center gap-2 px-4">
+        <div className="h-14 border-b bg-white flex items-center gap-2 px-4 flex-nowrap">
           <button className="inline-flex h-10 items-center whitespace-nowrap px-3 rounded-lg bg-gray-100 hover:bg-gray-200 gap-2" onClick={saveProject}>
             <Save className="w-4 h-4" /> Opslaan (project)
           </button>
@@ -383,13 +383,15 @@ export default function ModulaireKunstStudio() {
             <Grid3X3 className="w-4 h-4" /> Snap
           </button>
           <div className="mx-2 w-px bg-gray-200 h-6" />
-          <button className="inline-flex h-10 items-center px-2 rounded-lg hover:bg-gray-100" onClick={undo} title="Ongedaan maken (Ctrl/Cmd+Z)">
+          <div className="flex items-center gap-1">
+          <button className="inline-flex h-10 w-10 items-center justify-center rounded-lg hover:bg-gray-100" onClick={undo} title="Ongedaan maken (Ctrl/Cmd+Z)">
             <Undo2 className="w-4 h-4" />
           </button>
-          <button className="inline-flex h-10 items-center px-2 rounded-lg hover:bg-gray-100" onClick={redo} title="Opnieuw (Ctrl/Cmd+Y)">
+          <button className="inline-flex h-10 w-10 items-center justify-center rounded-lg hover:bg-gray-100" onClick={redo} title="Opnieuw (Ctrl/Cmd+Y)">
             <Redo2 className="w-4 h-4" />
           </button>
-          <div className="ml-auto text-sm text-gray-500">Tip: Delete = verwijderen · Ctrl/Cmd+D = dupliceren</div>
+          </div>
+          <div className="ml-auto hidden md:block whitespace-nowrap text-sm text-gray-500">Tip: Delete = verwijderen · Ctrl/Cmd+D = dupliceren</div>
         </div>
 
         <div
