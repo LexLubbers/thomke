@@ -487,17 +487,17 @@ export default function ModulaireKunstStudio() {
           </div>
         ) : (
           <div className="p-4 space-y-3">
-            <div className="flex items-center gap-2">
-              <button className="px-2 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 inline-flex items-center gap-1" onClick={bringForward} title="Naar voren">
+            <div className="grid grid-cols-2 gap-2">
+              <button className="w-full h-10 rounded-lg bg-gray-100 hover:bg-gray-200 inline-flex items-center justify-center gap-1 whitespace-nowrap" onClick={bringForward} title="Naar voren">
                 <ChevronUp className="w-4 h-4" />Voor
               </button>
-              <button className="px-2 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 inline-flex items-center gap-1" onClick={sendBackward} title="Naar achter">
+              <button className="w-full h-10 rounded-lg bg-gray-100 hover:bg-gray-200 inline-flex items-center justify-center gap-1 whitespace-nowrap" onClick={sendBackward} title="Naar achter">
                 <ChevronDown className="w-4 h-4" />Achter
               </button>
-              <button className="ml-auto px-2 py-1 rounded-lg bg-gray-100 hover:bg-gray-200 inline-flex items-center gap-1" onClick={duplicateSelected} title="Dupliceren (Ctrl/Cmd+D)">
+              <button className="w-full h-10 rounded-lg bg-gray-100 hover:bg-gray-200 inline-flex items-center justify-center gap-1 whitespace-nowrap" onClick={duplicateSelected} title="Dupliceren (Ctrl/Cmd+D)">
                 <Copy className="w-4 h-4" />Dupliceer
               </button>
-              <button className="px-2 py-1 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 inline-flex items-center gap-1" onClick={removeSelected} title="Verwijderen (Delete)">
+              <button className="w-full h-10 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 inline-flex items-center justify-center gap-1 whitespace-nowrap" onClick={removeSelected} title="Verwijderen (Delete)">
                 <Trash2 className="w-4 h-4" />Verwijder
               </button>
             </div>
