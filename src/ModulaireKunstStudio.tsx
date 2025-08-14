@@ -16,6 +16,7 @@ import {
   Save,
   FolderOpen,
   Palette,
+  Grid3X3,
 } from 'lucide-react';
 
 type Asset = {
@@ -96,6 +97,10 @@ export default function ModulaireKunstStudio() {
   const [future, setFuture] = useState<Project[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const canvasRef = useRef<HTMLDivElement | null>(null);
+  const piecesRef = useRef<HTMLDivElement | null>(null);
+  const [suppressUI, setSuppressUI] = useState(false);
+  const [snapEnabled, setSnapEnabled] = useState(false);
+  const gridSize = 24;
 
   const selectedPiece = useMemo(
     () => pieces.find((p) => p.id === selectedId) || null,
@@ -225,8 +230,11 @@ export default function ModulaireKunstStudio() {
   };
 
   const exportPNG = async () => {
-    if (!canvasRef.current) return;
-    const dataUrl = await toPng(canvasRef.current, { cacheBust: true, pixelRatio: 2 });
+    if (!piecesRef.current) return;
+    setSuppressUI(true);
+    await new Promise((r) => requestAnimationFrame(() => r(null)));
+    const dataUrl = await toPng(piecesRef.current, { cacheBust: true, pixelRatio: 2, backgroundColor: 'transparent' });
+    setSuppressUI(false);
     const a = document.createElement('a');
     a.href = dataUrl;
     a.download = `modulaire_kunst_${Date.now()}.png`;
@@ -234,8 +242,11 @@ export default function ModulaireKunstStudio() {
   };
 
   const exportSVG = async () => {
-    if (!canvasRef.current) return;
-    const dataUrl = await toSvg(canvasRef.current, { cacheBust: true });
+    if (!piecesRef.current) return;
+    setSuppressUI(true);
+    await new Promise((r) => requestAnimationFrame(() => r(null)));
+    const dataUrl = await toSvg(piecesRef.current, { cacheBust: true, backgroundColor: 'transparent' });
+    setSuppressUI(false);
     const a = document.createElement('a');
     a.href = dataUrl;
     a.download = `modulaire_kunst_${Date.now()}.svg`;
@@ -243,8 +254,11 @@ export default function ModulaireKunstStudio() {
   };
 
   const printCanvas = async () => {
-    if (!canvasRef.current) return;
-    const dataUrl = await toPng(canvasRef.current, { cacheBust: true, pixelRatio: 2 });
+    if (!piecesRef.current) return;
+    setSuppressUI(true);
+    await new Promise((r) => requestAnimationFrame(() => r(null)));
+    const dataUrl = await toPng(piecesRef.current, { cacheBust: true, pixelRatio: 2, backgroundColor: 'transparent' });
+    setSuppressUI(false);
     const w = window.open('')!;
     w.document.write(`<img src="${dataUrl}" style="max-width:100%"/>`);
     w.document.close();
@@ -345,27 +359,34 @@ export default function ModulaireKunstStudio() {
 
       <main className="flex-1 flex flex-col">
         <div className="h-14 border-b bg-white flex items-center gap-2 px-4">
-          <button className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 inline-flex items-center gap-2" onClick={saveProject}>
+          <button className="inline-flex h-10 items-center whitespace-nowrap px-3 rounded-lg bg-gray-100 hover:bg-gray-200 gap-2" onClick={saveProject}>
             <Save className="w-4 h-4" /> Opslaan (project)
           </button>
-          <button className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 inline-flex items-center gap-2" onClick={loadProject}>
+          <button className="inline-flex h-10 items-center whitespace-nowrap px-3 rounded-lg bg-gray-100 hover:bg-gray-200 gap-2" onClick={loadProject}>
             <FolderOpen className="w-4 h-4" /> Laden
           </button>
           <div className="mx-2 w-px bg-gray-200 h-6" />
-          <button className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 inline-flex items-center gap-2" onClick={exportPNG}>
+          <button className="inline-flex h-10 items-center whitespace-nowrap px-3 rounded-lg bg-gray-100 hover:bg-gray-200 gap-2" onClick={exportPNG}>
             <Download className="w-4 h-4" /> Exporteer PNG
           </button>
-          <button className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 inline-flex items-center gap-2" onClick={exportSVG}>
+          <button className="inline-flex h-10 items-center whitespace-nowrap px-3 rounded-lg bg-gray-100 hover:bg-gray-200 gap-2" onClick={exportSVG}>
             <Download className="w-4 h-4" /> Exporteer SVG
           </button>
-          <button className="px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 inline-flex items-center gap-2" onClick={printCanvas}>
+          <button className="inline-flex h-10 items-center whitespace-nowrap px-3 rounded-lg bg-gray-100 hover:bg-gray-200 gap-2" onClick={printCanvas}>
             <Printer className="w-4 h-4" /> Print
           </button>
+          <button
+            className={`inline-flex h-10 items-center whitespace-nowrap px-3 rounded-lg gap-2 border ${snapEnabled ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-gray-100 hover:bg-gray-200 border-transparent'}`}
+            onClick={() => setSnapEnabled((v) => !v)}
+            title="Toggle snap to grid"
+          >
+            <Grid3X3 className="w-4 h-4" /> Snap
+          </button>
           <div className="mx-2 w-px bg-gray-200 h-6" />
-          <button className="px-2 py-2 rounded-lg hover:bg-gray-100" onClick={undo} title="Ongedaan maken (Ctrl/Cmd+Z)">
+          <button className="inline-flex h-10 items-center px-2 rounded-lg hover:bg-gray-100" onClick={undo} title="Ongedaan maken (Ctrl/Cmd+Z)">
             <Undo2 className="w-4 h-4" />
           </button>
-          <button className="px-2 py-2 rounded-lg hover:bg-gray-100" onClick={redo} title="Opnieuw (Ctrl/Cmd+Y)">
+          <button className="inline-flex h-10 items-center px-2 rounded-lg hover:bg-gray-100" onClick={redo} title="Opnieuw (Ctrl/Cmd+Y)">
             <Redo2 className="w-4 h-4" />
           </button>
           <div className="ml-auto text-sm text-gray-500">Tip: Delete = verwijderen · Ctrl/Cmd+D = dupliceren</div>
@@ -386,6 +407,7 @@ export default function ModulaireKunstStudio() {
               backgroundSize: '24px 24px',
             }}
           >
+            <div ref={piecesRef} className="absolute inset-0">
             {pieces
               .slice()
               .sort((a, b) => a.z - b.z)
@@ -398,20 +420,30 @@ export default function ModulaireKunstStudio() {
                     bounds="parent"
                     size={{ width: pc.width, height: pc.height }}
                     position={{ x: pc.x, y: pc.y }}
+                    dragGrid={snapEnabled ? [gridSize, gridSize] : undefined}
+                    resizeGrid={snapEnabled ? [gridSize, gridSize] : undefined}
                     onMouseDown={() => setSelectedId(pc.id)}
                     onDragStart={() => setSelectedId(pc.id)}
                     onResizeStart={() => setSelectedId(pc.id)}
-                    onDragStop={(e, d) => updateSelected({ x: d.x, y: d.y })}
+                    onDragStop={(e, d) => {
+                      const nx = snapEnabled ? Math.round(d.x / gridSize) * gridSize : d.x;
+                      const ny = snapEnabled ? Math.round(d.y / gridSize) * gridSize : d.y;
+                      updateSelected({ x: nx, y: ny });
+                    }}
                     onResizeStop={(e, dir, ref, delta, pos) =>
                       setPieces((arr) =>
                         arr.map((x) =>
                           x.id === pc.id
                             ? {
                                 ...x,
-                                width: parseFloat(ref.style.width),
-                                height: parseFloat(ref.style.height),
-                                x: pos.x,
-                                y: pos.y,
+                                width: snapEnabled
+                                  ? Math.round(parseFloat(ref.style.width) / gridSize) * gridSize
+                                  : parseFloat(ref.style.width),
+                                height: snapEnabled
+                                  ? Math.round(parseFloat(ref.style.height) / gridSize) * gridSize
+                                  : parseFloat(ref.style.height),
+                                x: snapEnabled ? Math.round(pos.x / gridSize) * gridSize : pos.x,
+                                y: snapEnabled ? Math.round(pos.y / gridSize) * gridSize : pos.y,
                               }
                             : x
                         )
@@ -419,7 +451,7 @@ export default function ModulaireKunstStudio() {
                     }
                     style={{ zIndex: pc.z }}
                     className={
-                      'group ' + (pc.id === selectedId ? 'outline outline-2 outline-indigo-400/80' : '')
+                      'group ' + (!suppressUI && pc.id === selectedId ? 'outline outline-2 outline-indigo-400/80' : '')
                     }
                     enableUserSelectHack={false}
                   >
@@ -430,12 +462,15 @@ export default function ModulaireKunstStudio() {
                       className="w-full h-full object-contain select-none"
                       style={{ filter: filterCss(pc), opacity: pc.opacity / 100 }}
                     />
-                    <div className="absolute right-1 bottom-1 text-[10px] px-1 py-0.5 bg-black/40 text-white rounded opacity-0 group-hover:opacity-100">
-                      versleep/resize
-                    </div>
+                    {!suppressUI && (
+                      <div className="absolute right-1 bottom-1 text-[10px] px-1 py-0.5 bg-black/40 text-white rounded opacity-0 group-hover:opacity-100">
+                        versleep/resize
+                      </div>
+                    )}
                   </Rnd>
                 );
               })}
+            </div>
           </div>
         </div>
       </main>
