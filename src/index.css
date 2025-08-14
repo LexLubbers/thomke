@@ -10,9 +10,4 @@ body {
   margin: 0;
 }
 
-/* Prevent toolbar hint from wrapping over icons on small widths */
-.toolbar-nowrap {
-  white-space: nowrap;
-}
-
 

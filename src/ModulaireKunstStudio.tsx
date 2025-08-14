@@ -391,7 +391,6 @@ export default function ModulaireKunstStudio() {
             <Redo2 className="w-4 h-4" />
           </button>
           </div>
-          <div className="ml-auto hidden md:block whitespace-nowrap text-sm text-gray-500">Tip: Delete = verwijderen · Ctrl/Cmd+D = dupliceren</div>
         </div>
 
         <div
